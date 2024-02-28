@@ -29,11 +29,13 @@ let liveSocket = new LiveSocket("/live", Socket, {
   params: {_csrf_token: csrfToken}
 })
 
-var map = leaflet.map('map').setView([51.505, -0.09], 13);
-leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+if (window.document.querySelector('#map')) {
+  var map = leaflet.map('map').setView([51.505, -0.09], 13);
+  leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+}
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
