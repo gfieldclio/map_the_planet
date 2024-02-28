@@ -18,6 +18,7 @@ defmodule MapThePlanetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    resources "/worlds", WorldController
   end
 
   # Other scopes may use custom stacks.
