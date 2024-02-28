@@ -15,6 +15,7 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   def create(conn, %{"world" => world_params}) do
+    world_params = Map.put(world_params, "user_id", conn.assigns.current_user.id)
     case Maps.create_world(world_params) do
       {:ok, world} ->
         if upload = world_params["map"] do
