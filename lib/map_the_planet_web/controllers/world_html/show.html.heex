@@ -1,0 +1,15 @@
+<.header>
+  World <%= @world.id %>
+  <:subtitle>This is a world record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/worlds/#{@world}/edit"}>
+      <.button>Edit world</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @world.name %></:item>
+</.list>
+
+<.back navigate={~p"/worlds"}>Back to worlds</.back>

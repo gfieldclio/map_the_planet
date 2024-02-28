@@ -1,0 +1,8 @@
+<.header>
+  Edit World <%= @world.id %>
+  <:subtitle>Use this form to manage world records in your database.</:subtitle>
+</.header>
+
+<.world_form changeset={@changeset} action={~p"/worlds/#{@world}"} />
+
+<.back navigate={~p"/worlds"}>Back to worlds</.back>
