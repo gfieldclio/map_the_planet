@@ -49,5 +49,6 @@ defmodule MapThePlanetWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  plug Plug.Static, at: "/uploads", from: "assets/maps"
   plug MapThePlanetWeb.Router
 end
