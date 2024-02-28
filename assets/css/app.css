@@ -1,6 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "leaflet/dist/leaflet.css";
 
 /* This file is for your main application CSS */
-#map { height: 180px; }
+#map { height: 200px; }
