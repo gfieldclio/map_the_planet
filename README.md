@@ -9,7 +9,7 @@ Installation steps:
 1. brew install elixir
 2. Install https://postgresapp.com/ and click on “initialize” when you first run it. The app will need to be running (elephant in top bar) for your database to be accessible for phoenix.
 3. Install node if you don't have it `brew install node`
-4. Navigate to `assert/` and run `npm install`
+4. Navigate to `assest/` and run `npm install`
 5. Return to root and run `mix setup`
 6. Profit
 
