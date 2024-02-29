@@ -37,7 +37,7 @@ if (window.document.querySelector("#map")) {
 
   var map = leaflet.map("map").setView([0, 0], 0);
   leaflet
-    .tileLayer(`/uploads/world-${worldID}/{z}/tile_{x}_{y}.png`, {
+    .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
       maxZoom: 5,
     })
     .addTo(map);

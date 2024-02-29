@@ -68,13 +68,15 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   defp save_file(upload, world) do
-    extension = Path.extname(upload.filename)
-    path = asset_path(world)
     project_root = File.cwd!
+    world_directory_path = asset_path(world)
+    original_file_path = "#{world_directory_path}/original_image.png"
 
     delete_files(world)
-    {output, 0} = System.cmd("#{project_root}/priv/bin/maptiles", [upload.path, "--square",  path])
-     IO.inspect output
+    File.mkdir_p(world_directory_path)
+
+    File.cp_r(upload.path, original_file_path, on_conflict: fn(_a, _b) -> true end)
+    System.cmd("#{project_root}/priv/bin/maptiles", [original_file_path, "--square",  "#{world_directory_path}/tiles"])
   end
 
   defp delete_files(world) do
