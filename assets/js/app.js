@@ -42,6 +42,7 @@ if (window.document.querySelector("#map")) {
     })
     .addTo(map);
 
+  leaflet.Icon.Default.imagePath = '../images/' // Tell leaflet we store images in priv/static/images
 
   function onMapClick(e) {
     leaflet.marker(e.latlng).addTo(map);
