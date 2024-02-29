@@ -85,10 +85,12 @@ defmodule MapThePlanetWeb.WorldController do
     dir_path = "assets/tmp/#{UUID.uuid4}"
     file_path = "#{dir_path}/image.png"
 
-    File.mkdir_p(dir_path)
-    File.cp_r(upload.path, file_path, on_conflict: fn(_a, _b) -> true end)
+    :ok = File.mkdir_p(dir_path)
+    {:ok, _} = File.cp_r(upload.path, file_path, on_conflict: fn(_a, _b) -> true end)
 
     {:ok, dir_path, file_path}
+  rescue
+    e -> {:error, e}
   end
 
   defp create_tmp_tiles(tmp_file_path) do
@@ -96,6 +98,8 @@ defmodule MapThePlanetWeb.WorldController do
     {:ok, details} = create_tiles(tmp_file_path, dir_path)
 
     {:ok, dir_path, details}
+  rescue
+    e -> {:error, e}
   end
 
   defp create_tiles(source_file_path, path) do
