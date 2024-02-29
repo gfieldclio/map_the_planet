@@ -1,8 +1,10 @@
-<.header>
-  Edit World <%= @world.id %>
-  <:subtitle>Use this form to manage world records in your database.</:subtitle>
-</.header>
+<div class="mx-auto max-w-3xl">
+  <.header>
+    Edit World <%= @world.id %>
+    <:subtitle>Use this form to manage world records in your database.</:subtitle>
+  </.header>
 
-<.world_form changeset={@changeset} action={~p"/worlds/#{@world}"} />
+  <.world_form changeset={@changeset} action={~p"/worlds/#{@world}"} />
 
-<.back navigate={~p"/worlds"}>Back to worlds</.back>
+  <.back navigate={~p"/worlds"}>Back to worlds</.back>
+</div>

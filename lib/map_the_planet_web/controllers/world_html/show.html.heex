@@ -1,17 +1,19 @@
-<.header>
-  <%= @world.name %>
-  <:subtitle>This is a world record from your database.</:subtitle>
-  <:actions>
-    <.link href={~p"/worlds/#{@world}/edit"}>
-      <.button>Edit world</.button>
-    </.link>
-  </:actions>
-</.header>
+<div class="mx-auto max-w-3xl">
+  <.header>
+    <%= @world.name %>
+    <:subtitle>This is a world record from your database.</:subtitle>
+    <:actions>
+      <.link href={~p"/worlds/#{@world}/edit"}>
+        <.button>Edit world</.button>
+      </.link>
+    </:actions>
+  </.header>
 
-<.list>
-  <:item title="Name"><%= @world.name %></:item>
-</.list>
+  <.list>
+    <:item title="Name"><%= @world.name %></:item>
+  </.list>
 
-<.back navigate={~p"/worlds"}>Back to worlds</.back>
+  <.back navigate={~p"/worlds"}>Back to worlds</.back>
+</div>
 
 <div id="map" data-world-id={@world.id} data-max-zoom={@world.max_zoom || 0}></div>
