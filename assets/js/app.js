@@ -41,6 +41,13 @@ if (window.document.querySelector("#map")) {
       maxZoom: 5,
     })
     .addTo(map);
+
+
+  function onMapClick(e) {
+    leaflet.marker(e.latlng).addTo(map);
+}
+
+map.on('click', onMapClick);
 }
 
 // Show progress bar on live navigation and form submits
