@@ -103,11 +103,10 @@ defmodule MapThePlanet.Maps do
     World.changeset(world, attrs)
   end
 
-  # FIX MY ORDER BY Sabrina
-  # def list_worlds_for_user(%User{} = user) do
-  #   user
-  #   |> Ecto.assoc(:worlds)
-  #   |> order_by([w], desc: w.inserted_at)
-  #   |> Repo.all
-  # end
+  def list_worlds_for_user(%User{} = user) do
+    user
+    |> Ecto.assoc(:worlds)
+    |> order_by([w], desc: w.inserted_at)
+    |> Repo.all
+  end
 end

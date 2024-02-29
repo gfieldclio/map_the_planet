@@ -81,7 +81,8 @@ defmodule MapThePlanet.MixProject do
         "tailwind map_the_planet --minify",
         "esbuild map_the_planet --minify",
         "phx.digest"
-      ]
+      ],
+      server: ["phx.server"],
     ]
   end
 end
