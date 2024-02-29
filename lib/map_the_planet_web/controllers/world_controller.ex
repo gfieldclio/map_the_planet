@@ -19,7 +19,7 @@ defmodule MapThePlanetWeb.WorldController do
     case Maps.create_world(world_params) do
       {:ok, world} ->
         if upload = world_params["map"] do
-          save_file(upload, world.id)
+          save_file(upload, world)
         end
         conn
         |> put_flash(:info, "World created successfully.")
@@ -47,7 +47,7 @@ defmodule MapThePlanetWeb.WorldController do
     case Maps.update_world(world, world_params) do
       {:ok, world} ->
         if upload = world_params["map"] do
-          save_file(upload, world.id)
+          save_file(upload, world)
         end
         conn
         |> put_flash(:info, "World updated successfully.")
@@ -61,30 +61,27 @@ defmodule MapThePlanetWeb.WorldController do
   def delete(conn, %{"id" => id}) do
     world = Maps.get_world!(id)
     {:ok, _world} = Maps.delete_world(world)
-    delete_file(world.id)
+    delete_files(world)
     conn
     |> put_flash(:info, "World deleted successfully.")
     |> redirect(to: ~p"/worlds")
   end
 
-  defp save_file(upload, world_id) do
-
+  defp save_file(upload, world) do
     extension = Path.extname(upload.filename)
-    path = "assets/maps/world-#{world_id}"
+    path = asset_path(world)
     project_root = File.cwd!
 
-    # extension = Path.extname(upload.filename)
-    # path = "assets/maps/#{world_id}-map#{extension}"
-
-    # File.cp_r("${upload.path, path, on_conflict: fn(_a, _b) -> true end)
-
-    # IO.inspect  File.cp_r(upload.path, path, on_conflict: fn(_a, _b) -> true end)
-    IO.inspect System.cmd("#{project_root}/priv/bin/maptiles", [upload.path, "--square",  path])
-
-    #
+    delete_files(world)
+    {output, 0} = System.cmd("#{project_root}/priv/bin/maptiles", [upload.path, "--square",  path])
+     IO.inspect output
   end
 
-  defp delete_file(world_id) do
-   Enum.each(Path.wildcard("assets/maps/world-#{world_id}*"), fn x -> File.rm(x) end)
+  defp delete_files(world) do
+    File.rm_rf(asset_path(world))
+  end
+
+  defp asset_path(world) do
+    MapThePlanet.Maps.World.asset_path(world)
   end
 end

@@ -8,6 +8,10 @@ defmodule MapThePlanet.Maps.World do
     timestamps(type: :utc_datetime)
   end
 
+  def asset_path(world) do
+    "assets/maps/world-#{world.id}"
+  end
+
   @doc false
   def changeset(world, attrs) do
     IO.inspect attrs
