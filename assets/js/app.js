@@ -31,14 +31,15 @@ let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
 });
 
-if (window.document.querySelector("#map")) {
-  const worldID =
-    window.document.querySelector("#map").attributes["data-world-id"].value;
+const container = window.document.querySelector("#map")
+if (container) {
+  const worldID = container.attributes["data-world-id"].value;
+  const maxZoom = container.attributes["data-max-zoom"].value;
 
   var map = leaflet.map("map").setView([0, 0], 3);
   leaflet
     .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
-      maxZoom: 5,
+      maxZoom: maxZoom,
     })
     .addTo(map);
 

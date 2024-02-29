@@ -1,5 +1,5 @@
 <.header>
-  World <%= @world.id %>
+  <%= @world.name %>
   <:subtitle>This is a world record from your database.</:subtitle>
   <:actions>
     <.link href={~p"/worlds/#{@world}/edit"}>
@@ -14,4 +14,4 @@
 
 <.back navigate={~p"/worlds"}>Back to worlds</.back>
 
-<div id="map" data-world-id={"#{@world.id}"}></div>
+<div id="map" data-world-id={@world.id} data-max-zoom={@world.max_zoom || 0}></div>
