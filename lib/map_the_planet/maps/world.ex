@@ -4,7 +4,8 @@ defmodule MapThePlanet.Maps.World do
 
   schema "worlds" do
     field :name, :string
-    field :user_id, :integer
+    belongs_to :user, MapThePlanet.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 
@@ -14,10 +15,8 @@ defmodule MapThePlanet.Maps.World do
 
   @doc false
   def changeset(world, attrs) do
-    IO.inspect attrs
-
     world
-    |> cast(attrs, [:name, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
   end
 end

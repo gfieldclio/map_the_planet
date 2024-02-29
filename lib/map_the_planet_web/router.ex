@@ -21,6 +21,11 @@ defmodule MapThePlanetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/", MapThePlanetWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
     resources "/worlds", WorldController
   end
 

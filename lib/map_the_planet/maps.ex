@@ -5,7 +5,7 @@ defmodule MapThePlanet.Maps do
 
   import Ecto.Query, warn: false
   alias MapThePlanet.Repo
-
+  alias MapThePlanet.Accounts.User
   alias MapThePlanet.Maps.World
 
   @doc """
@@ -49,8 +49,9 @@ defmodule MapThePlanet.Maps do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_world(attrs \\ %{}) do
-    %World{}
+  def create_world_for_user(%User{} = user, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:worlds)
     |> World.changeset(attrs)
     |> Repo.insert()
   end
@@ -101,4 +102,12 @@ defmodule MapThePlanet.Maps do
   def change_world(%World{} = world, attrs \\ %{}) do
     World.changeset(world, attrs)
   end
+
+  # FIX MY ORDER BY Sabrina
+  # def list_worlds_for_user(%User{} = user) do
+  #   user
+  #   |> Ecto.assoc(:worlds)
+  #   |> order_by([w], desc: w.inserted_at)
+  #   |> Repo.all
+  # end
 end
