@@ -35,7 +35,7 @@ if (window.document.querySelector("#map")) {
   const worldID =
     window.document.querySelector("#map").attributes["data-world-id"].value;
 
-  var map = leaflet.map("map").setView([0, 0], 0);
+  var map = leaflet.map("map").setView([0, 0], 3);
   leaflet
     .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
       maxZoom: 5,
