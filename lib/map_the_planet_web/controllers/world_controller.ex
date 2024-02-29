@@ -1,5 +1,6 @@
 defmodule MapThePlanetWeb.WorldController do
   use MapThePlanetWeb, :controller
+  import MapThePlanet.Maps.World, only: [asset_path: 1]
 
   alias MapThePlanet.Maps
   alias MapThePlanet.Maps.World
@@ -81,9 +82,5 @@ defmodule MapThePlanetWeb.WorldController do
 
   defp delete_files(world) do
     File.rm_rf(asset_path(world))
-  end
-
-  defp asset_path(world) do
-    MapThePlanet.Maps.World.asset_path(world)
   end
 end
