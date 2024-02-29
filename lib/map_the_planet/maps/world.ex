@@ -17,7 +17,7 @@ defmodule MapThePlanet.Maps.World do
   @doc false
   def changeset(world, attrs) do
     world
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :max_zoom])
     |> validate_required([:name])
   end
 end
