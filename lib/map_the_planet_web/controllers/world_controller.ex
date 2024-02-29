@@ -1,6 +1,5 @@
 defmodule MapThePlanetWeb.WorldController do
   use MapThePlanetWeb, :controller
-  import MapThePlanet.Maps.World, only: [asset_path: 1]
 
   alias MapThePlanet.Maps
   alias MapThePlanet.Maps.World
@@ -16,18 +15,21 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   def create(conn, %{"world" => world_params}) do
-    case Maps.create_world_for_user(conn.assigns.current_user, world_params) do
-      {:ok, world} ->
-        if upload = world_params["map"] do
-          save_file(upload, world)
-        end
-        conn
-        |> put_flash(:info, "World created successfully.")
-        |> redirect(to: ~p"/worlds/#{world}")
+    validate!(world_params)
+    {:ok, tmp_file_dir_path, tmp_file_path} = create_tmp_file(world_params["map"])
+    {:ok, tmp_tile_dir_path, details} = create_tmp_tiles(tmp_file_path)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
-    end
+    {:ok, world} = MapThePlanet.Repo.transaction(fn ->
+      attributes = Map.put(world_params, "max_zoom", details.max_zoom)
+      {:ok, world} = Maps.create_world_for_user(conn.assigns.current_user, attributes)
+      delete_files(tmp_file_dir_path)
+      :ok = File.rename(tmp_tile_dir_path, World.asset_path(world))
+      world
+    end)
+
+    conn
+    |> put_flash(:info, "World created successfully.")
+    |> redirect(to: ~p"/worlds/#{world}")
   end
 
   def show(conn, %{"id" => id}) do
@@ -44,47 +46,70 @@ defmodule MapThePlanetWeb.WorldController do
   def update(conn, %{"id" => id, "world" => world_params}) do
     world = Maps.get_world!(id)
 
-    case Maps.update_world(world, world_params) do
-      {:ok, world} ->
-        if upload = world_params["map"] do
-          save_file(upload, world)
-        end
-        conn
-        |> put_flash(:info, "World updated successfully.")
-        |> redirect(to: ~p"/worlds/#{world}")
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, world: world, changeset: changeset)
-    end
+    validate!(world_params)
+    {:ok, tmp_file_dir_path, tmp_file_path} = create_tmp_file(world_params["map"])
+    {:ok, tmp_tile_dir_path, details} = create_tmp_tiles(tmp_file_path)
+
+    MapThePlanet.Repo.transaction(fn ->
+      attributes = Map.put(world_params, "max_zoom", details.max_zoom)
+      {:ok, %World{}} = Maps.update_world(world, attributes)
+      delete_files(tmp_file_dir_path)
+      delete_files(World.asset_path(world))
+      :ok = File.rename(tmp_tile_dir_path, World.asset_path(world))
+    end)
+
+    conn
+    |> put_flash(:info, "World updated successfully.")
+    |> redirect(to: ~p"/worlds/#{world}")
   end
 
   def delete(conn, %{"id" => id}) do
     world = Maps.get_world!(id)
     {:ok, _world} = Maps.delete_world(world)
-    delete_files(world)
+    delete_files(World.asset_path(world))
     conn
     |> put_flash(:info, "World deleted successfully.")
     |> redirect(to: ~p"/worlds")
   end
 
-  defp save_file(upload, world) do
+  defp validate!(%{"map" => upload, "name" => _}) do
     allowed_types = ~w{.png .jpg .jpeg .gif}
     extension = Path.extname(upload.filename)
-    if Enum.member?(allowed_types, extension) do
-      project_root = File.cwd!
-      world_directory_path = asset_path(world)
-      original_file_path = "#{world_directory_path}/original_image.png"
 
-      delete_files(world)
-      File.mkdir_p(world_directory_path)
-
-      File.cp_r(upload.path, original_file_path, on_conflict: fn(_a, _b) -> true end)
-      System.cmd("#{project_root}/priv/bin/maptiles", [original_file_path, "--square",  "#{world_directory_path}/tiles"])
-    else
-      raise "Only PNG files can be uploaded."
+    if extension not in allowed_types do
+      raise "Only PNG, JPG, or GIF files can be uploaded."
     end
   end
 
-  defp delete_files(world) do
-    File.rm_rf(asset_path(world))
+  defp create_tmp_file(upload) do
+    dir_path = "assets/tmp/#{UUID.uuid4}"
+    file_path = "#{dir_path}/image.png"
+
+    File.mkdir_p(dir_path)
+    File.cp_r(upload.path, file_path, on_conflict: fn(_a, _b) -> true end)
+
+    {:ok, dir_path, file_path}
+  end
+
+  defp create_tmp_tiles(tmp_file_path) do
+    dir_path = "assets/tmp/#{UUID.uuid4}"
+    {:ok, details} = create_tiles(tmp_file_path, dir_path)
+
+    {:ok, dir_path, details}
+  end
+
+  defp create_tiles(source_file_path, path) do
+    project_root = File.cwd!
+
+    {result, 0} = System.cmd("#{project_root}/priv/bin/maptiles", [source_file_path, "--square",  "#{path}/tiles"])
+    [_, format, max_zoom] = Regex.run(~r/Format\:\s*(\w+)\s.*Maximum Zoom\:\s*(\d+)/, result)
+
+    {:ok, %{format: format, max_zoom: max_zoom}}
+  rescue
+    e -> {:error, e}
+  end
+
+  defp delete_files(path) do
+    {:ok, _} = File.rm_rf(path)
   end
 end

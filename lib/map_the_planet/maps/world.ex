@@ -4,6 +4,7 @@ defmodule MapThePlanet.Maps.World do
 
   schema "worlds" do
     field :name, :string
+    field :max_zoom, :integer
     belongs_to :user, MapThePlanet.Accounts.User
 
     timestamps(type: :utc_datetime)

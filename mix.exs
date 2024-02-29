@@ -59,7 +59,8 @@ defmodule MapThePlanet.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
-      {:sqlitex, "~> 1.7"}
+      {:sqlitex, "~> 1.7"},
+      { :uuid, "~> 1.1" }
     ]
   end
 
