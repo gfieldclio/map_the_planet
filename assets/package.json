@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "ol": "^9.0.0"
   }
 }

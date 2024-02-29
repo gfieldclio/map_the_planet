@@ -21,7 +21,10 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
-import leaflet from "leaflet";
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -34,38 +37,57 @@ let liveSocket = new LiveSocket("/live", Socket, {
 const container = window.document.querySelector("#map")
 if (container) {
   const worldID = container.attributes["data-world-id"].value;
-  const maxZoom = container.attributes["data-max-zoom"].value;
+  const maxZoom = parseInt(container.attributes["data-max-zoom"].value, 10);
 
-  var map = leaflet.map("map").setView([0, 0], 3);
-  maxPixelBounds = map.getPixelWorldBounds().max;
-  northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
-  southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
-  bounds = L.latLngBounds(southWest,northEast);
-
-  leaflet
-    .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
+  new Map({
+    target: 'map',
+    layers: [
+      new TileLayer({
+        source: new XYZ({
+          url: `/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`,
+          wrapX: false
+        }),
+      })
+    ],
+    view: new View({
+      center: [0, 0],
+      zoom: 0,
       maxZoom: maxZoom,
-      noWrap: true,
-      maxBounds: bounds,
+      extent: new View().getProjection().getExtent()
     })
-    .addTo(map);
-
-  leaflet.Icon.Default.imagePath = '../images/' // Tell leaflet we store images in priv/static/images
-
-  function onMapClick(e) {
-    leaflet.marker(e.latlng).addTo(map);
-  }
-  map.on('click', onMapClick);
-
-  map.on("zoom", function (event){
-    maxPixelBounds = map.getPixelWorldBounds().max;
-    northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
-    southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
-    bounds = L.latLngBounds(southWest,northEast);
-
-    map.setMaxBounds(bounds);
   });
-  }
+
+
+  // var map = leaflet.map("map").setView([0, 0], 0);
+  // maxPixelBounds = map.getPixelWorldBounds().max;
+  // northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
+  // southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
+  // bounds = L.latLngBounds(southWest,northEast);
+
+  // leaflet
+  //   .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
+  //     maxZoom: maxZoom,
+  //     noWrap: true,
+  //     maxBounds: bounds,
+  //   })
+  //   .addTo(map);
+
+  // leaflet.Icon.Default.imagePath = '../images/' // Tell leaflet we store images in priv/static/images
+
+  // function onMapClick(e) {
+  //   leaflet.marker(e.latlng).addTo(map);
+  // }
+  // map.on('click', onMapClick);
+
+  // map.on("zoom", function (event){
+  //   maxPixelBounds = map.getPixelWorldBounds().max;
+  //   northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
+  //   southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
+  //   bounds = L.latLngBounds(southWest,northEast);
+
+  //   map.setMaxBounds(bounds);
+  // });
+}
 
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });

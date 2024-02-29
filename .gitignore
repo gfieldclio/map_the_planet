@@ -36,5 +36,6 @@ npm-debug.log
 /assets/node_modules/
 
 /assets/maps/
+/assets/tmp/
 
 .DS_Store
