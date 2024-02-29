@@ -68,13 +68,23 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   defp save_file(upload, world_id) do
-    extension = Path.extname(upload.filename)
-    path = "assets/maps/#{world_id}-map#{extension}"
 
-    File.cp_r(upload.path, path, on_conflict: fn(_a, _b) -> true end)
+    extension = Path.extname(upload.filename)
+    path = "assets/maps/world-#{world_id}"
+    project_root = File.cwd!
+
+    # extension = Path.extname(upload.filename)
+    # path = "assets/maps/#{world_id}-map#{extension}"
+
+    # File.cp_r("${upload.path, path, on_conflict: fn(_a, _b) -> true end)
+
+    # IO.inspect  File.cp_r(upload.path, path, on_conflict: fn(_a, _b) -> true end)
+    IO.inspect System.cmd("#{project_root}/priv/bin/maptiles", [upload.path, "--square",  path])
+
+    #
   end
 
   defp delete_file(world_id) do
-   Enum.each(Path.wildcard("assets/maps/#{world_id}*"), fn x -> File.rm(x) end)
+   Enum.each(Path.wildcard("assets/maps/world-#{world_id}*"), fn x -> File.rm(x) end)
   end
 end
