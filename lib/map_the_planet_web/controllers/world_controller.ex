@@ -52,7 +52,6 @@ defmodule MapThePlanetWeb.WorldController do
         conn
         |> put_flash(:info, "World updated successfully.")
         |> redirect(to: ~p"/worlds/#{world}")
-
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, world: world, changeset: changeset)
     end
@@ -68,15 +67,21 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   defp save_file(upload, world) do
-    project_root = File.cwd!
-    world_directory_path = asset_path(world)
-    original_file_path = "#{world_directory_path}/original_image.png"
+    allowed_types = ~w{.png .jpg .jpeg .gif}
+    extension = Path.extname(upload.filename)
+    if Enum.member?(allowed_types, extension) do
+      project_root = File.cwd!
+      world_directory_path = asset_path(world)
+      original_file_path = "#{world_directory_path}/original_image.png"
 
-    delete_files(world)
-    File.mkdir_p(world_directory_path)
+      delete_files(world)
+      File.mkdir_p(world_directory_path)
 
-    File.cp_r(upload.path, original_file_path, on_conflict: fn(_a, _b) -> true end)
-    System.cmd("#{project_root}/priv/bin/maptiles", [original_file_path, "--square",  "#{world_directory_path}/tiles"])
+      File.cp_r(upload.path, original_file_path, on_conflict: fn(_a, _b) -> true end)
+      System.cmd("#{project_root}/priv/bin/maptiles", [original_file_path, "--square",  "#{world_directory_path}/tiles"])
+    else
+      raise "Only PNG files can be uploaded."
+    end
   end
 
   defp delete_files(world) do
