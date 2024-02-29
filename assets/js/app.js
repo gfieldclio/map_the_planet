@@ -40,6 +40,7 @@ if (container) {
   leaflet
     .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
       maxZoom: maxZoom,
+      noWrap: true,
     })
     .addTo(map);
 
