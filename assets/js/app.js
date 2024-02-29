@@ -37,10 +37,16 @@ if (container) {
   const maxZoom = container.attributes["data-max-zoom"].value;
 
   var map = leaflet.map("map").setView([0, 0], 3);
+  maxPixelBounds = map.getPixelWorldBounds().max;
+  northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
+  southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
+  bounds = L.latLngBounds(southWest,northEast);
+
   leaflet
     .tileLayer(`/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`, {
       maxZoom: maxZoom,
       noWrap: true,
+      maxBounds: bounds,
     })
     .addTo(map);
 
@@ -48,10 +54,18 @@ if (container) {
 
   function onMapClick(e) {
     leaflet.marker(e.latlng).addTo(map);
-}
+  }
+  map.on('click', onMapClick);
 
-map.on('click', onMapClick);
-}
+  map.on("zoom", function (event){
+    maxPixelBounds = map.getPixelWorldBounds().max;
+    northEast = L.latLng(maxPixelBounds.x,maxPixelBounds.y);
+    southWest = L.latLng(maxPixelBounds.x*-1,maxPixelBounds.y*-1);
+    bounds = L.latLngBounds(southWest,northEast);
+
+    map.setMaxBounds(bounds);
+  });
+  }
 
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
