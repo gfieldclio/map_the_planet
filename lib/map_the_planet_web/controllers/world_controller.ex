@@ -23,7 +23,7 @@ defmodule MapThePlanetWeb.WorldController do
       attributes = Map.put(world_params, "max_zoom", details.max_zoom)
       {:ok, world} = Maps.create_world_for_user(conn.assigns.current_user, attributes)
       delete_files(tmp_file_dir_path)
-      :ok = File.rename(tmp_tile_dir_path, World.asset_path(world))
+      File.rename!(tmp_tile_dir_path, World.asset_path(world))
       world
     end)
 
@@ -85,12 +85,10 @@ defmodule MapThePlanetWeb.WorldController do
     dir_path = "assets/tmp/#{UUID.uuid4}"
     file_path = "#{dir_path}/image.png"
 
-    :ok = File.mkdir_p(dir_path)
-    {:ok, _} = File.cp_r(upload.path, file_path, on_conflict: fn(_a, _b) -> true end)
+    File.mkdir_p!(dir_path)
+    File.cp_r!(upload.path, file_path, on_conflict: fn(_a, _b) -> true end)
 
     {:ok, dir_path, file_path}
-  rescue
-    e -> {:error, e}
   end
 
   defp create_tmp_tiles(tmp_file_path) do
@@ -114,6 +112,6 @@ defmodule MapThePlanetWeb.WorldController do
   end
 
   defp delete_files(path) do
-    {:ok, _} = File.rm_rf(path)
+    File.rm_rf!(path)
   end
 end

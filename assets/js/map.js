@@ -26,6 +26,55 @@ if (container) {
   });
   mode = MODE_MOVE;
 
+  const map = new Map({
+    target: "map",
+    layers: [
+      new TileLayer({
+        source: new XYZ({
+          url: `/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`,
+          wrapX: false,
+        }),
+      }),
+      vectorLayer,
+    ],
+    view: new View({
+      center: [0, 0],
+      zoom: 0,
+      maxZoom: maxZoom,
+      extent: new View().getProjection().getExtent(),
+    }),
+  });
+
+  let draw;
+  enableMoveMode = function () {
+    if (mode == MODE_MOVE) {
+      return;
+    }
+
+    map.removeInteraction(draw);
+    mode = MODE_MOVE;
+  }
+  enableDrawMode = function () {
+    if (mode == MODE_DRAW) {
+      return;
+    }
+
+    draw = new Draw({
+      source: vectorSource,
+      type: "LineString",
+    });
+    map.addInteraction(draw);
+    mode = MODE_DRAW;
+  }
+  enablePinMode = function () {
+    if (mode == MODE_PIN) {
+      return;
+    }
+
+    map.removeInteraction(draw);
+    mode = MODE_PIN;
+  }
+
   dropPin = function (event) {
     if (mode != MODE_PIN) {
       return;
@@ -46,43 +95,9 @@ if (container) {
     vectorSource.addFeature(iconFeature);
   };
 
-  let draw;
-
-  const map = new Map({
-    target: "map",
-    layers: [
-      new TileLayer({
-        source: new XYZ({
-          url: `/uploads/world-${worldID}/tiles/{z}/tile_{x}_{y}.png`,
-          wrapX: false,
-        }),
-      }),
-      vectorLayer,
-    ],
-    view: new View({
-      center: [0, 0],
-      zoom: 0,
-      maxZoom: maxZoom,
-      extent: new View().getProjection().getExtent(),
-    }),
-  });
+  document.querySelector("#move").addEventListener("click", enableMoveMode);
+  document.querySelector("#draw").addEventListener("click", enableDrawMode);
+  document.querySelector("#pin").addEventListener("click", enablePinMode);
 
   map.on("click", dropPin);
-
-  document.querySelector("#move").addEventListener("click", function () {
-    map.removeInteraction(draw);
-    mode = MODE_MOVE;
-  });
-  document.querySelector("#draw").addEventListener("click", function () {
-    draw = new Draw({
-      source: vectorSource,
-      type: "LineString",
-    });
-    map.addInteraction(draw);
-    mode = MODE_DRAW;
-  });
-  document.querySelector("#pin").addEventListener("click", function () {
-    map.removeInteraction(draw);
-    mode = MODE_PIN;
-  });
 }
