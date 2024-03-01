@@ -1,25 +1,23 @@
-<div class="mx-auto max-w-3xl">
-  <.header>
-    Listing Worlds
-    <:actions>
-      <.link href={~p"/worlds/new"}>
-        <.button>New World</.button>
-      </.link>
-    </:actions>
-  </.header>
+<.header>
+  Listing Worlds
+  <:actions>
+    <.link href={~p"/worlds/new"}>
+      <.button>New World</.button>
+    </.link>
+  </:actions>
+</.header>
 
-  <.table id="worlds" rows={@worlds} row_click={&JS.navigate(~p"/worlds/#{&1}")}>
-    <:col :let={world} label="Name"><%= world.name %></:col>
-    <:action :let={world}>
-      <div class="sr-only">
-        <.link navigate={~p"/worlds/#{world}"}>Show</.link>
-      </div>
-      <.link navigate={~p"/worlds/#{world}/edit"}>Edit</.link>
-    </:action>
-    <:action :let={world}>
-      <.link href={~p"/worlds/#{world}"} method="delete" data-confirm="Are you sure?">
-        Delete
-      </.link>
-    </:action>
-  </.table>
-</div>
+<.table id="worlds" rows={@worlds} row_click={&JS.navigate(~p"/worlds/#{&1}")}>
+  <:col :let={world} label="Name"><%= world.name %></:col>
+  <:action :let={world}>
+    <div class="sr-only">
+      <.link navigate={~p"/worlds/#{world}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/worlds/#{world}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={world}>
+    <.link href={~p"/worlds/#{world}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

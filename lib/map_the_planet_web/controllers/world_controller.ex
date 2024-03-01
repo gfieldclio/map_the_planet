@@ -34,7 +34,7 @@ defmodule MapThePlanetWeb.WorldController do
 
   def show(conn, %{"id" => id}) do
     world = Maps.get_world!(id)
-    render(conn, :show, world: world)
+    render(conn, :show, world: world, layout: false)
   end
 
   def edit(conn, %{"id" => id}) do
