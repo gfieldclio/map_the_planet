@@ -11,6 +11,10 @@ import XYZ from "ol/source/XYZ";
 
 const container = window.document.querySelector("#map");
 if (container) {
+  const MODE_MOVE = "move";
+  const MODE_DRAW = "draw";
+  const MODE_PIN = "pin";
+
   const worldID = container.attributes["data-world-id"].value;
   const maxZoom = parseInt(container.attributes["data-max-zoom"].value, 10);
   const vectorSource = new VectorSource({
@@ -19,8 +23,13 @@ if (container) {
   const vectorLayer = new VectorLayer({
     source: vectorSource,
   });
+  mode = MODE_MOVE;
 
-  onMapClick = function (event) {
+  addPin = function (event) {
+    if (mode != MODE_PIN) {
+      return;
+    }
+
     const iconFeature = new Feature({
       geometry: new Point(event.coordinate),
     });
@@ -35,6 +44,10 @@ if (container) {
     iconFeature.setStyle(iconStyle);
     vectorSource.addFeature(iconFeature);
   };
+
+  draw = function (event) {
+    
+  }
 
   const map = new Map({
     target: "map",
@@ -55,5 +68,16 @@ if (container) {
     }),
   });
 
-  map.on("click", onMapClick);
+  map.on("click", addPin);
+  map.on("click", draw);
+
+  document.querySelector("#move").addEventListener("click", function () {
+    mode = MODE_MOVE;
+  });
+  document.querySelector("#draw").addEventListener("click", function () {
+    mode = MODE_DRAW;
+  });
+  document.querySelector("#pin").addEventListener("click", function () {
+    mode = MODE_PIN;
+  });
 }
