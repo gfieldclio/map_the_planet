@@ -62,6 +62,7 @@ if (container) {
     draw = new Draw({
       source: vectorSource,
       type: "LineString",
+      freehand: true
     });
     map.addInteraction(draw);
     mode = MODE_DRAW;
