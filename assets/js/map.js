@@ -8,6 +8,7 @@ import VectorLayer from "ol/layer/Vector";
 import Icon from "ol/style/Icon";
 import Point from "ol/geom/Point";
 import XYZ from "ol/source/XYZ";
+import Draw from 'ol/interaction/Draw.js';
 
 const container = window.document.querySelector("#map");
 if (container) {
@@ -25,7 +26,7 @@ if (container) {
   });
   mode = MODE_MOVE;
 
-  addPin = function (event) {
+  dropPin = function (event) {
     if (mode != MODE_PIN) {
       return;
     }
@@ -45,7 +46,7 @@ if (container) {
     vectorSource.addFeature(iconFeature);
   };
 
-  draw = function (event) {};
+  let draw;
 
   const map = new Map({
     target: "map",
@@ -66,16 +67,22 @@ if (container) {
     }),
   });
 
-  map.on("click", addPin);
-  map.on("click", draw);
+  map.on("click", dropPin);
 
   document.querySelector("#move").addEventListener("click", function () {
+    map.removeInteraction(draw);
     mode = MODE_MOVE;
   });
   document.querySelector("#draw").addEventListener("click", function () {
+    draw = new Draw({
+      source: vectorSource,
+      type: "LineString",
+    });
+    map.addInteraction(draw);
     mode = MODE_DRAW;
   });
   document.querySelector("#pin").addEventListener("click", function () {
+    map.removeInteraction(draw);
     mode = MODE_PIN;
   });
 }
