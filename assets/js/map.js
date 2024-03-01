@@ -8,7 +8,8 @@ import VectorLayer from "ol/layer/Vector";
 import Icon from "ol/style/Icon";
 import Point from "ol/geom/Point";
 import XYZ from "ol/source/XYZ";
-import Draw from 'ol/interaction/Draw.js';
+import Draw from 'ol/interaction/Draw';
+import Stroke from 'ol/style/Stroke';
 
 const container = window.document.querySelector("#map");
 if (container) {
@@ -46,6 +47,12 @@ if (container) {
   });
 
   let draw;
+  drawEnd = function (event) {
+    event.feature.setStyle(new Style({
+      stroke: new Stroke({ color: 'red', width: 1 })
+    }));
+    console.log(event);
+  }
   enableMoveMode = function () {
     if (mode == MODE_MOVE) {
       return;
@@ -62,9 +69,14 @@ if (container) {
     draw = new Draw({
       source: vectorSource,
       type: "LineString",
-      freehand: true
+      freehand: true,
+      style: {
+        'stroke-color': 'yellow',
+        'stroke-width': 1.5,
+      }
     });
     map.addInteraction(draw);
+    draw.addEventListener("drawend", drawEnd);
     mode = MODE_DRAW;
   }
   enablePinMode = function () {
