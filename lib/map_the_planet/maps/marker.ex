@@ -3,7 +3,7 @@ defmodule MapThePlanet.Maps.Marker do
   import Ecto.Changeset
 
   schema "markers" do
-    field :latlng, {:array, :float}
+    field :coordinate, {:array, :float}
     belongs_to :world, MapThePlanet.Maps.World
 
     timestamps(type: :utc_datetime)
@@ -12,16 +12,16 @@ defmodule MapThePlanet.Maps.Marker do
   @doc false
   def changeset(marker, attrs) do
     marker
-    |> cast(attrs, [:latlng])
-    |> validate_required([:latlng])
+    |> cast(attrs, [:coordinate])
+    |> validate_required([:coordinate])
   end
 
-  def lat(marker) do
-    hd marker.latlng
+  def x(marker) do
+    hd marker.coordinate
   end
 
-  def lng(marker) do
-    marker.latlng
+  def y(marker) do
+    marker.coordinate
     |> tl
     |> hd
   end
