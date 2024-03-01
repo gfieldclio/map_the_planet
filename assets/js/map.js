@@ -26,10 +26,10 @@ if (container) {
     });
     const iconStyle = new Style({
       image: new Icon({
-        anchor: [0.5, 46],
+        anchor: [0.5, 1],
         anchorXUnits: "fraction",
-        anchorYUnits: "pixels",
-        src: "/images/marker-icon.png",
+        anchorYUnits: "fraction",
+        src: "/images/eye-sauron-icon.png",
       }),
     });
     iconFeature.setStyle(iconStyle);
