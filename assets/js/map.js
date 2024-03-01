@@ -38,16 +38,14 @@ if (container) {
         anchor: [0.5, 1],
         anchorXUnits: "fraction",
         anchorYUnits: "fraction",
-        src: "/images/eye-sauron-icon.png",
+        src: "/images/icons/eye-sauron-icon.png",
       }),
     });
     iconFeature.setStyle(iconStyle);
     vectorSource.addFeature(iconFeature);
   };
 
-  draw = function (event) {
-    
-  }
+  draw = function (event) {};
 
   const map = new Map({
     target: "map",
