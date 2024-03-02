@@ -1,4 +1,4 @@
-<div class="h-[calc(100vh-25px)] grid grid-cols-1 grid-rows-[40px_40px_1fr]">
+<div class="h-[calc(100vh-25px)] grid grid-cols-1 grid-rows-[40px_1fr]">
   <header class="flex items-center justify-between gap-6">
     <h1 class="flex-1"><%= @world.name %></h1>
     <div class="flex-none"><.back navigate={~p"/worlds"}>Back to worlds</.back></div>
@@ -6,13 +6,6 @@
       <.button>Edit world</.button>
     </.link>
   </header>
-
-  <div>
-    <.button id="move">🤚</.button>
-    <.button id="draw">✍️</.button>
-    <.button id="pin">📍</.button>
-    <input type="color" id="head" name="head" value="#e66465" />
-  </div>
 
   <div class="map" id="map" data-world-id={@world.id} data-max-zoom={@world.max_zoom || 0}></div>
 </div>
