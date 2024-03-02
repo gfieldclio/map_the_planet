@@ -4,6 +4,9 @@ import Icon from "ol/style/Icon";
 import Point from "ol/geom/Point";
 import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
+
+import ColorSelectorControl from "./color-selector-control";
+
 import { MODE_DRAW, MODE_MOVE, MODE_PIN } from "./constants";
 import { Control } from "ol/control";
 
@@ -31,6 +34,8 @@ class ModeControl extends Control {
       element: element,
       target: options.target,
     });
+
+    this.colorSelectorControl = new ColorSelectorControl();
 
     this.handleMoveModeClick = this.handleMoveModeClick.bind(this)
     this.handleDrawModeClick = this.handleDrawModeClick.bind(this)
@@ -85,16 +90,20 @@ class ModeControl extends Control {
   };
 
   handleDrawEnd(event) {
+    const color = this.getMap().get("drawColor") || "black";
+
     event.feature.setStyle(new Style({
-      stroke: new Stroke({ color: "red", width: 1 })
+      stroke: new Stroke({ color: color, width: 1 })
     }));
   }
 
   setMode(mode) {
     if (mode == MODE_DRAW) {
       this.getMap().addInteraction(this.getDraw());
+      this.getMap().addControl(this.colorSelectorControl)
     } else {
       this.getMap().removeInteraction(this.getDraw());
+      this.getMap().removeControl(this.colorSelectorControl);
     }
 
     if (mode == MODE_PIN) {
@@ -111,23 +120,23 @@ class ModeControl extends Control {
   }
 
   getDraw() {
-    if (this.draw) {
-      return this.draw;
-    }
-    else {
+    if (this.getMap().get("draw")) {
+      return this.getMap().get("draw");
+    } else {
       const vectorSource = this.getMap().getLayers().item(1).getSource();
-      this.draw = new Draw({
+      const draw = new Draw({
         source: vectorSource,
         type: "LineString",
         freehand: true,
         style: {
-          "stroke-color": "yellow",
+          "stroke-color": "black",
           "stroke-width": 1.5,
         }
       });
-      this.draw.addEventListener("drawend", this.handleDrawEnd.bind(this));
+      draw.addEventListener("drawend", this.handleDrawEnd.bind(this));
+      this.getMap().set("draw", draw)
 
-      return this.draw;
+      return draw;
     }
   }
 }
