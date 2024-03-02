@@ -5,7 +5,7 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import XYZ from "ol/source/XYZ";
 import {defaults as defaultControls} from 'ol/control';
-import DrawModeControl from "./map/draw-mode-control";
+import ModeControl from "./map/mode-control";
 
 const container = window.document.querySelector("#map");
 if (container) {
@@ -19,7 +19,7 @@ if (container) {
   });
 
   new Map({
-    controls: defaultControls().extend([new DrawModeControl()]),
+    controls: defaultControls().extend([new ModeControl()]),
     target: "map",
     layers: [
       new TileLayer({
